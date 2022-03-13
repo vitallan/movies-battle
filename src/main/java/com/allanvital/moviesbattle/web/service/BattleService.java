@@ -7,6 +7,7 @@ import com.allanvital.moviesbattle.web.model.Battle;
 import com.allanvital.moviesbattle.web.model.Game;
 import com.allanvital.moviesbattle.web.model.Movie;
 import com.allanvital.moviesbattle.web.repository.BattleRepository;
+import com.allanvital.moviesbattle.web.repository.GameRepository;
 import com.allanvital.moviesbattle.web.repository.MovieRepository;
 import com.allanvital.moviesbattle.web.service.exception.ApplicationInInvalidStateException;
 import com.allanvital.moviesbattle.web.service.exception.BattleNotCreatedException;
@@ -24,14 +25,16 @@ import java.util.List;
 public class BattleService {
 
     private static final Integer MAXIMUM_ERRORS_PER_GAME = 3;
-    private Logger log = LoggerFactory.getLogger(BattleService.class);
+    private final Logger log = LoggerFactory.getLogger(BattleService.class);
 
     private final BattleRepository repository;
     private final MovieRepository movieRepository;
+    private final GameRepository gameRepository;
 
-    public BattleService(BattleRepository repository, MovieRepository movieRepository) {
+    public BattleService(BattleRepository repository, MovieRepository movieRepository, GameRepository gameRepository) {
         this.repository = repository;
         this.movieRepository = movieRepository;
+        this.gameRepository = gameRepository;
     }
 
     public void answerCurrentBattle(Game game, Movie answer) {
@@ -39,6 +42,25 @@ public class BattleService {
         battle.setPlayerAnswer(answer);
         battle.setAnsweredAt(LocalDateTime.now());
         repository.save(battle);
+        Integer quantityOfWrongAnswers = repository.countWrongAnswersInGame(game);
+        if(quantityOfWrongAnswers >= MAXIMUM_ERRORS_PER_GAME) {
+            log.info("The maximum number of errors have been answered. Closing game {}", game);
+            game.setClosedAt(LocalDateTime.now());
+            gameRepository.save(game);
+        }
+    }
+
+    public void answerCurrentBattle(Game game, Integer answerId) {
+        Battle battle = repository.findByGameAndPlayerAnswerIsNull(game);
+        Movie answer = null;
+        if(battle.getLeftBracket().getId().equals(answerId)) {
+            answer = battle.getLeftBracket();
+        } else if(battle.getRightBracket().getId().equals(answerId)) {
+            answer = battle.getRightBracket();
+        } else {
+            throw new RuntimeException("invalid id answer"); //fixme custom exception
+        }
+        this.answerCurrentBattle(game, answer);
     }
 
     public Battle getCurrentBattle(Game game) {
@@ -46,6 +68,10 @@ public class BattleService {
     }
 
     public Battle getNextBattle(Game game) {
+        if (game.isClosed()) {
+            log.info("This game is closed, so no new battles will be provided {}", game);
+            return null;
+        }
         Integer quantityOfWrongAnswers = repository.countWrongAnswersInGame(game);
         if(quantityOfWrongAnswers >= MAXIMUM_ERRORS_PER_GAME) {
             log.info("The maximum number of errors have been answered. No new battles will be started in game {}", game);
@@ -125,6 +151,5 @@ public class BattleService {
     private boolean hasPairBeenTried(Pair<Integer, Integer> pair, List<Pair<Integer, Integer>> pairList) {
         return pairList.contains(Pair.of(pair.getFirst(), pair.getSecond())) || pairList.contains(Pair.of(pair.getSecond(), pair.getFirst()));
      }
-
 
 }

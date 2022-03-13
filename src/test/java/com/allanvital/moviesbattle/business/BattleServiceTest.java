@@ -7,8 +7,10 @@ import com.allanvital.moviesbattle.web.service.BattleService;
 import com.allanvital.moviesbattle.web.service.GameService;
 import com.allanvital.moviesbattle.web.service.exception.ApplicationInInvalidStateException;
 import com.allanvital.moviesbattle.web.service.exception.NoMoreValidBattleMatchesException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -20,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Sql(scripts = {"/data/tear-down.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class BattleServiceTest {
 
     @Autowired
@@ -123,9 +124,7 @@ public class BattleServiceTest {
 
     @BeforeEach
     private void createMockGame() {
-        if (this.game == null) {
-            this.game = gameService.startNewGame();
-        }
+        this.game = gameService.startNewGame();
     }
 
     private void answerWrong(Battle battle) {

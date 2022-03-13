@@ -19,6 +19,9 @@ public class Game {
     @GeneratedValue(strategy = IDENTITY)
     private Integer id;
 
+    @Column
+    private LocalDateTime closedAt;
+
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -55,4 +58,15 @@ public class Game {
                 '}';
     }
 
+    public LocalDateTime getClosedAt() {
+        return closedAt;
+    }
+
+    public void setClosedAt(LocalDateTime closedAt) {
+        this.closedAt = closedAt;
+    }
+
+    public boolean isClosed() {
+        return this.closedAt != null;
+    }
 }
