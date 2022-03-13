@@ -6,7 +6,7 @@ import org.springframework.data.util.Pair;
 
 public class MathUtils {
 
-    public static Pair<Integer, Integer> findTwoDifferentRandomIntegers(long maximumValue) {
+    public static Pair<Integer, Integer> findTwoDifferentRandomIntegers(long maximumValue) throws MaximumValueTooLowException {
         if (maximumValue < 2) {
             throw new MaximumValueTooLowException("To return a pair of integers, the maximum value parameter must be higher than 2");
         }

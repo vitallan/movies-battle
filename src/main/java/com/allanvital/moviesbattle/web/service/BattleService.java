@@ -2,12 +2,15 @@ package com.allanvital.moviesbattle.web.service;
 
 import com.allanvital.moviesbattle.utils.MathUtils;
 import com.allanvital.moviesbattle.utils.exception.MaximumValueTooLowException;
+import com.allanvital.moviesbattle.utils.exception.TooManyTriesToFindPairException;
 import com.allanvital.moviesbattle.web.model.Battle;
 import com.allanvital.moviesbattle.web.model.Game;
 import com.allanvital.moviesbattle.web.model.Movie;
 import com.allanvital.moviesbattle.web.repository.BattleRepository;
 import com.allanvital.moviesbattle.web.repository.MovieRepository;
 import com.allanvital.moviesbattle.web.service.exception.ApplicationInInvalidStateException;
+import com.allanvital.moviesbattle.web.service.exception.BattleNotCreatedException;
+import com.allanvital.moviesbattle.web.service.exception.NoMoreValidBattleMatchesException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.util.Pair;
@@ -20,6 +23,7 @@ import java.util.List;
 @Service
 public class BattleService {
 
+    private static final Integer MAXIMUM_ERRORS_PER_GAME = 3;
     private Logger log = LoggerFactory.getLogger(BattleService.class);
 
     private final BattleRepository repository;
@@ -38,10 +42,15 @@ public class BattleService {
     }
 
     public Battle getCurrentBattle(Game game) {
-        return repository.findByGameAndPlayerAnswerIsNull(game);
+        return repository.findFirstByGameOrderByCreatedAtDesc(game);
     }
 
     public Battle getNextBattle(Game game) {
+        Integer quantityOfWrongAnswers = repository.countWrongAnswersInGame(game);
+        if(quantityOfWrongAnswers >= MAXIMUM_ERRORS_PER_GAME) {
+            log.info("The maximum number of errors have been answered. No new battles will be started in game {}", game);
+            return null;
+        }
         Battle battle = repository.findByGameAndPlayerAnswerIsNull(game);
         if (battle != null) {
             log.info("Found open battle for game " + game);
@@ -52,6 +61,10 @@ public class BattleService {
         } catch (MaximumValueTooLowException e) {
             log.error("Application is in invalid state: not enough movies in database to create a battle");
             throw new ApplicationInInvalidStateException("There are fewer than 2 movies in database, therefore there are not possible battles", e);
+        } catch (TooManyTriesToFindPairException e) {
+            String message = "Due to random imprevisibility, the application was not able to find a valid battle";
+            log.error(message);
+            throw new BattleNotCreatedException(message, e);
         }
     }
 
@@ -79,21 +92,28 @@ public class BattleService {
             if (persistedBattle != null) {
                 log.debug("Battle between pair of pageIndex {} already occurred, continuing...", idPair);
                 triedPairs.add(idPair);
+                firstMovie = null;
+                secondMovie = null;
                 continue;
             }
             persistedBattle = repository.findByGameAndLeftBracketAndRightBracket(game, secondMovie, firstMovie);
             if (persistedBattle != null) {
                 log.debug("Battle between pair of pageIndex {} already occurred, continuing...", idPair);
                 triedPairs.add(idPair);
+                firstMovie = null;
+                secondMovie = null;
                 continue;
             }
             log.debug("Battle between movies {} and {} is valid, creating battle", firstMovie, secondMovie);
             break;
         } while(maximumNumberOfPossiblePairs > triedPairs.size());
+        if (firstMovie == null || secondMovie == null) {
+            throw new NoMoreValidBattleMatchesException("There are no more possible movies to create a new battle for this game");
+        }
         battle.setGame(game);
         battle.setRightBracket(firstMovie);
         battle.setLeftBracket(secondMovie);
-        if (firstMovie.getRating() > secondMovie.getRating()) {
+        if (firstMovie.getRating() > secondMovie.getRating()) { //fixme:think about tie rule
             battle.setCorrectAnswer(firstMovie);
         } else {
             battle.setCorrectAnswer(secondMovie);
