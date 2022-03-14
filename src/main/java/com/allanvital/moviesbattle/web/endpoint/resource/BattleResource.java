@@ -2,6 +2,7 @@ package com.allanvital.moviesbattle.web.endpoint.resource;
 
 import com.allanvital.moviesbattle.web.model.Battle;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BattleResource {
@@ -9,6 +10,11 @@ public class BattleResource {
     private Integer id;
     private MovieResource leftBracket;
     private MovieResource rightBracket;
+
+    @ApiModelProperty(
+            required = false,
+            hidden = true
+    )
     private ResponseResource userAnswer;
 
     public BattleResource() {}

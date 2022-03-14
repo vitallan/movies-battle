@@ -4,4 +4,7 @@ import com.allanvital.moviesbattle.web.model.Game;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface GameRepository extends PagingAndSortingRepository<Game, Integer> {
+
+    Game findByPlayerAndClosedAtIsNull(String player);
+
 }

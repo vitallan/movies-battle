@@ -1,6 +1,5 @@
-package com.allanvital.moviesbattle.web.endpoint;
+package com.allanvital.moviesbattle.web.endpoint.exception;
 
-import com.allanvital.moviesbattle.web.endpoint.exception.GameIsClosedException;
 import com.allanvital.moviesbattle.web.endpoint.resource.ExceptionResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

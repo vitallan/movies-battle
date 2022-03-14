@@ -2,6 +2,7 @@ package com.allanvital.moviesbattle.web.endpoint.resource;
 
 import com.allanvital.moviesbattle.web.model.Game;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,11 @@ public class GameResource {
 
     private Integer id;
     private LocalDateTime createdAt;
+
+    @ApiModelProperty(
+            required = false,
+            hidden = true
+    )
     private LocalDateTime closedAt;
 
     public GameResource(Game game) {

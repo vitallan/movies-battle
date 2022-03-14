@@ -2,10 +2,7 @@ package com.allanvital.moviesbattle.web.model;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -18,6 +15,9 @@ public class Game {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Integer id;
+
+    @Column(nullable = false, updatable = false)
+    private String player;
 
     @Column
     private LocalDateTime closedAt;
@@ -64,6 +64,14 @@ public class Game {
 
     public void setClosedAt(LocalDateTime closedAt) {
         this.closedAt = closedAt;
+    }
+
+    public String getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(String player) {
+        this.player = player;
     }
 
     public boolean isClosed() {

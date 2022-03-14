@@ -3,6 +3,7 @@ package com.allanvital.moviesbattle.business;
 import com.allanvital.moviesbattle.web.model.Battle;
 import com.allanvital.moviesbattle.web.model.Game;
 import com.allanvital.moviesbattle.web.model.Movie;
+import com.allanvital.moviesbattle.web.model.User;
 import com.allanvital.moviesbattle.web.service.BattleService;
 import com.allanvital.moviesbattle.web.service.GameService;
 import com.allanvital.moviesbattle.web.service.exception.ApplicationInInvalidStateException;
@@ -124,7 +125,7 @@ public class BattleServiceTest {
 
     @BeforeEach
     private void createMockGame() {
-        this.game = gameService.startNewGame();
+        this.game = gameService.startNewGame("placeholder");
     }
 
     private void answerWrong(Battle battle) {

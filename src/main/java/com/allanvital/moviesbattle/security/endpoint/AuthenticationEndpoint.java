@@ -1,10 +1,17 @@
 package com.allanvital.moviesbattle.security.endpoint;
 
+import com.allanvital.moviesbattle.infra.ShowInDocumentPage;
 import com.allanvital.moviesbattle.security.JwtTokenUtil;
 import com.allanvital.moviesbattle.security.dto.AuthRequest;
 import com.allanvital.moviesbattle.security.dto.AuthenticationTokenResponse;
+import com.allanvital.moviesbattle.web.endpoint.resource.BattleResource;
 import com.allanvital.moviesbattle.web.model.User;
 import com.allanvital.moviesbattle.web.repository.UserRepository;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@ShowInDocumentPage
 @RestController
+@Api(tags = { "Authentication" })
 @RequestMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
 public class AuthenticationEndpoint {
 
@@ -37,6 +46,11 @@ public class AuthenticationEndpoint {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Operation(summary = "Log in the user",
+            tags = {"Authentication"},
+            responses = {
+                    @ApiResponse(description = "User is logged and the JWT token is displayed in the body", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthenticationTokenResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Login fail")})
     @PostMapping("/login")
     public ResponseEntity<AuthenticationTokenResponse> login(@RequestBody AuthRequest request) {
         try {
@@ -61,6 +75,11 @@ public class AuthenticationEndpoint {
         }
     }
 
+    @Operation(summary = "Create a new user",
+            tags = {"Authentication"},
+            responses = {
+                    @ApiResponse(description = "User is created and ready to login", responseCode = "201"),
+                    @ApiResponse(responseCode = "401", description = "Login fail")})
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody AuthRequest request) {
         User user = new User();

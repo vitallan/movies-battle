@@ -15,7 +15,7 @@ import static java.lang.String.format;
 public class JwtTokenUtil {
 
     private final Logger log = LoggerFactory.getLogger(JwtTokenUtil.class);
-    private final String jwtSecret = "zdtlD3JK56m6wTTgsNFhqzjqP";
+    private final String jwtSecret = "thiscrazysecretrighthere";
     private final String jwtIssuer = "moviebattles.com";
 
     public String generateAccessToken(User user) {

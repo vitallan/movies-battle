@@ -1,6 +1,7 @@
 package com.allanvital.moviesbattle.web.service;
 
 import com.allanvital.moviesbattle.web.model.Game;
+import com.allanvital.moviesbattle.web.model.User;
 import com.allanvital.moviesbattle.web.repository.GameRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,14 @@ public class GameService {
         this.repository = repository;
     }
 
-    public Game startNewGame() {
-        return repository.save(new Game());
+    public Game startNewGame(String player) {
+        Game game = repository.findByPlayerAndClosedAtIsNull(player);
+        if(game != null) {
+            return game;
+        }
+        game = new Game();
+        game.setPlayer(player);
+        return repository.save(game);
     }
 
     public Game findGame(Integer gameId) {

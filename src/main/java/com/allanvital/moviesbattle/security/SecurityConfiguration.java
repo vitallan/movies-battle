@@ -27,7 +27,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserRepository userRepository;
     private JwtTokenFilter jwtTokenFilter;
 
-
     public SecurityConfiguration(UserRepository userRepository, JwtTokenFilter jwtTokenFilter) {
         this.userRepository = userRepository;
         this.jwtTokenFilter = jwtTokenFilter;
@@ -71,9 +70,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 );
 
         http.authorizeRequests()
-                        .antMatchers("/register").permitAll()
-                        .antMatchers("/login").permitAll()
-                        .anyRequest().authenticated();
+                .antMatchers("/register").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/v2/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .anyRequest().authenticated();
 
         // Add JWT token filter
         http.addFilterBefore(
