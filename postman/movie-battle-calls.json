@@ -1,0 +1,201 @@
+{
+	"variables": [],
+	"info": {
+		"name": "LetsCode",
+		"_postman_id": "7632ff47-bea8-991a-f614-da4ef93fbc4f",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"url": "http://localhost:8080/register",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\" : \"allao\",\n\t\"password\" : \"doidao\"\n}"
+				},
+				"description": "Cria um usuario novo"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"url": "http://localhost:8080/login",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\" : \"allao\",\n\t\"password\" : \"doidao\"\n}"
+				},
+				"description": "Login de um usuario"
+			},
+			"response": []
+		},
+		{
+			"name": "Start Game",
+			"request": {
+				"url": "http://localhost:8080/games",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGxlbixhbGxlbiIsImlzcyI6Im1vdmllYmF0dGxlcy5jb20iLCJpYXQiOjE2NDcyMDQ5OTksImV4cCI6MTY0NzgwOTc5OX0.HQ5ISEX1S1SkToj-Vf9ZtBfiuU7qpv_5b02csZ40sRGkc9gqMSaE6AeEOT4TyXiJD3ZjPMbcstGR4dwfc9KWSQ",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Close Game",
+			"request": {
+				"url": "http://localhost:8080/games/2",
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c3VhcmlvMix1c3VhcmlvMiIsImlzcyI6Im1vdmllYmF0dGxlcy5jb20iLCJpYXQiOjE2NDcyNjk1NTUsImV4cCI6MTY0Nzg3NDM1NX0.Lq_w3tVH722xi1AJ4LSBSwx66WH5otRe9ezAm0pSb-IdQOHNwJqassmngk7y5-17adIlpaHkLG4L18W0h-ZgRQ",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Start Battle",
+			"request": {
+				"url": "http://localhost:8080/games/1/battles",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c3VhcmlvMSx1c3VhcmlvMSIsImlzcyI6Im1vdmllYmF0dGxlcy5jb20iLCJpYXQiOjE2NDcyNjkyOTcsImV4cCI6MTY0Nzg3NDA5N30.gWEXJGKuzH7ok5cxIh9utkUyGy0unctHpyXN7sJY_hbDAxS42oRyi8TBh9m1U8xOi7XLyW-KUs3LNFBWZo6PNg",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Answer Battle",
+			"request": {
+				"url": "http://localhost:8080/games/1/battles",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c3VhcmlvMSx1c3VhcmlvMSIsImlzcyI6Im1vdmllYmF0dGxlcy5jb20iLCJpYXQiOjE2NDcyNjkyOTcsImV4cCI6MTY0Nzg3NDA5N30.gWEXJGKuzH7ok5cxIh9utkUyGy0unctHpyXN7sJY_hbDAxS42oRyi8TBh9m1U8xOi7XLyW-KUs3LNFBWZo6PNg",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n\"movieAnswerId\" : 12\n\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Battle",
+			"request": {
+				"url": "http://localhost:8080/games/1/battles/1",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c3VhcmlvMSx1c3VhcmlvMSIsImlzcyI6Im1vdmllYmF0dGxlcy5jb20iLCJpYXQiOjE2NDcyNjkyOTcsImV4cCI6MTY0Nzg3NDA5N30.gWEXJGKuzH7ok5cxIh9utkUyGy0unctHpyXN7sJY_hbDAxS42oRyi8TBh9m1U8xOi7XLyW-KUs3LNFBWZo6PNg",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n\"movieAnswerId\" : 12\n\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Ranking",
+			"request": {
+				"url": "http://localhost:8080/ranking",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ1c3VhcmlvMSx1c3VhcmlvMSIsImlzcyI6Im1vdmllYmF0dGxlcy5jb20iLCJpYXQiOjE2NDcyNjkyOTcsImV4cCI6MTY0Nzg3NDA5N30.gWEXJGKuzH7ok5cxIh9utkUyGy0unctHpyXN7sJY_hbDAxS42oRyi8TBh9m1U8xOi7XLyW-KUs3LNFBWZo6PNg",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n\"movieAnswerId\" : 12\n\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
