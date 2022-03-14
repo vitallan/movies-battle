@@ -6,10 +6,13 @@ import com.allanvital.moviesbattle.web.model.Movie;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import java.util.List;
+
 public interface BattleRepository extends PagingAndSortingRepository<Battle, Integer> {
 
     @Query("SELECT COUNT(b) FROM Battle b WHERE b.playerAnswer != b.correctAnswer AND b.game = :game")
     Integer countWrongAnswersInGame(Game game);
+    List<Battle> findByGame(Game game);
     Battle findByGameAndPlayerAnswerIsNull(Game game);
     Battle findFirstByGameOrderByCreatedAtDesc(Game game);
     Battle findByGameAndLeftBracketAndRightBracket(Game game, Movie leftBracket, Movie RightBracket);

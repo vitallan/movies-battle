@@ -2,6 +2,7 @@ package com.allanvital.moviesbattle.web.endpoint;
 
 import com.allanvital.moviesbattle.infra.ShowInDocumentPage;
 import com.allanvital.moviesbattle.web.endpoint.exception.GameNotFoundException;
+import com.allanvital.moviesbattle.web.endpoint.integrity.GameAndUserMatchValidator;
 import com.allanvital.moviesbattle.web.endpoint.resource.GameResource;
 import com.allanvital.moviesbattle.web.model.Game;
 import com.allanvital.moviesbattle.web.service.GameService;
@@ -26,9 +27,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class GameEndpoint {
 
     private GameService service;
+    private GameAndUserMatchValidator validator;
 
-    public GameEndpoint(GameService service) {
+    public GameEndpoint(GameService service, GameAndUserMatchValidator validator) {
         this.service = service;
+        this.validator = validator;
     }
 
     @Operation(summary = "Create a new Game",
@@ -53,7 +56,8 @@ public class GameEndpoint {
                     @ApiResponse(responseCode = "401", description = "User not logged on")})
     @ResponseStatus(value = HttpStatus.OK)
     @DeleteMapping("/{id}")
-    public ResponseEntity<GameResource> closeGame(@PathVariable("id") Integer id) {
+    public ResponseEntity<GameResource> closeGame(@PathVariable("id") Integer id, @ApiIgnore Authentication authentication) {
+        validator.validateGameIsFromUser(id, authentication);
         Game game = service.closeGame(id);
         if (game != null) {
             return new ResponseEntity<>(new GameResource(game), HttpStatus.OK);

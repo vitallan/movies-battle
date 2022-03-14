@@ -3,6 +3,8 @@ package com.allanvital.moviesbattle.web.service;
 import com.allanvital.moviesbattle.utils.MathUtils;
 import com.allanvital.moviesbattle.utils.exception.MaximumValueTooLowException;
 import com.allanvital.moviesbattle.utils.exception.TooManyTriesToFindPairException;
+import com.allanvital.moviesbattle.web.endpoint.exception.BattleNotFoundException;
+import com.allanvital.moviesbattle.web.endpoint.exception.GameNotFoundException;
 import com.allanvital.moviesbattle.web.endpoint.exception.InvalidIdAnswerException;
 import com.allanvital.moviesbattle.web.model.Battle;
 import com.allanvital.moviesbattle.web.model.Game;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BattleService {
@@ -40,8 +43,7 @@ public class BattleService {
 
     public void answerCurrentBattle(Game game, Movie answer) {
         Battle battle = repository.findByGameAndPlayerAnswerIsNull(game);
-        battle.setPlayerAnswer(answer);
-        battle.setAnsweredAt(LocalDateTime.now());
+        battle.answerBattle(answer);
         repository.save(battle);
         Integer quantityOfWrongAnswers = repository.countWrongAnswersInGame(game);
         if(quantityOfWrongAnswers >= MAXIMUM_ERRORS_PER_GAME) {
@@ -108,7 +110,7 @@ public class BattleService {
             Pair<Integer, Integer> idPair = MathUtils.findTwoDifferentRandomIntegers(totalMovies);
 
             log.debug("Trying pair of pageIndex {} of ids for new battle in game {}", idPair, game);
-            if (hasPairBeenTried(idPair, triedPairs)) {
+            if (hasPairBeenTried(idPair, triedPairs)) { //to avoid unnecessary db hits
                 log.debug("Pair of pageIndex {} already tried, continuing...", idPair);
                 continue;
             }
@@ -119,7 +121,6 @@ public class BattleService {
                 triedPairs.add(idPair);
                 firstMovie = null;
                 secondMovie = null;
-                continue;
             } else {
                 log.debug("Battle between movies {} and {} is valid, creating battle", firstMovie, secondMovie);
                 break;
@@ -145,4 +146,15 @@ public class BattleService {
         return pairList.contains(Pair.of(pair.getFirst(), pair.getSecond())) || pairList.contains(Pair.of(pair.getSecond(), pair.getFirst()));
      }
 
+    public Battle getBattleFromGame(Integer gameId, Integer battleId) {
+        Optional<Game> game = gameRepository.findById(gameId);
+        if(game.isEmpty()) {
+            throw new GameNotFoundException("Game with id " + gameId + " was not found");
+        }
+        Optional<Battle> battle = repository.findById(battleId);
+        if(battle.isEmpty()) {
+            throw new BattleNotFoundException("Battle with id " + battleId + " was not found");
+        }
+        return battle.get();
+    }
 }

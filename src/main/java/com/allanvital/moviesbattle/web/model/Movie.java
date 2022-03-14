@@ -61,14 +61,12 @@ public class Movie {
         if (this == o) return true;
         if (!(o instanceof Movie)) return false;
         Movie movie = (Movie) o;
-        return Objects.equals(id, movie.id) &&
-                Objects.equals(title, movie.title) &&
-                Objects.equals(rating, movie.rating);
+        return Objects.equals(id, movie.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, rating);
+        return Objects.hash(id);
     }
 
     @Override
@@ -78,5 +76,4 @@ public class Movie {
                 ", title='" + title + '\'' +
                 '}';
     }
-
 }

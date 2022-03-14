@@ -92,6 +92,13 @@ public class Battle {
         return correctAnswer;
     }
 
+    public boolean playerAnsweredCorrectly(){
+        if(playerAnswer == null) {
+            return false;
+        }
+        return this.correctAnswer.getId() == this.playerAnswer.getId();
+    }
+
     public void setCorrectAnswer(Movie correctAnswer) {
         this.correctAnswer = correctAnswer;
     }
@@ -114,6 +121,11 @@ public class Battle {
 
     public void setAnsweredAt(LocalDateTime answeredAt) {
         this.answeredAt = answeredAt;
+    }
+
+    public void answerBattle(Movie movie) {
+        this.playerAnswer = movie;
+        this.answeredAt = LocalDateTime.now();
     }
 
     @Override

@@ -78,10 +78,10 @@ public class BattleEndpoint {
                     @ApiResponse(responseCode = "401", description = "User not logged on")})
 
     @GetMapping("/{battle_id}")
-    public ResponseEntity<BattleResource> getCurrentBattle(@PathVariable("game_id") Integer gameId, @PathVariable("battle_id") Integer battleId, @ApiIgnore Authentication authentication) {
+    public ResponseEntity<BattleResource> getBattleById(@PathVariable("game_id") Integer gameId, @PathVariable("battle_id") Integer battleId, @ApiIgnore Authentication authentication) {
         validator.validateGameIsFromUser(gameId, authentication);
-        Game game = gameService.findGame(gameId);
-        BattleResource resource = new BattleResource(service.getCurrentBattle(game));
+        Battle battle = service.getBattleFromGame(gameId, battleId);
+        BattleResource resource = new BattleResource(battle);
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 

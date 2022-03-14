@@ -34,4 +34,10 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ExceptionResource(response), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = { BattleNotFoundException.class })
+    public ResponseEntity<Object> handleBattleNotFound(BattleNotFoundException exception) {
+        String response = exception.getMessage();
+        return new ResponseEntity<>(new ExceptionResource(response), HttpStatus.NOT_FOUND);
+    }
+
 }
