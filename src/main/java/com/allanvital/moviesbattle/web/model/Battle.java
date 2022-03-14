@@ -43,6 +43,19 @@ public class Battle {
     @Column
     private LocalDateTime answeredAt;
 
+    public Battle() {}
+
+    public Battle(Game game, Movie firstMovie, Movie secondMovie) {
+        this.game = game;
+        this.rightBracket = firstMovie;
+        this.leftBracket = secondMovie;
+        if (firstMovie.getRating() > secondMovie.getRating()) { //fixme:think about tie rule
+            this.correctAnswer = firstMovie;
+        } else {
+            this.correctAnswer = secondMovie;
+        }
+    }
+
     public Integer getId() {
         return id;
     }

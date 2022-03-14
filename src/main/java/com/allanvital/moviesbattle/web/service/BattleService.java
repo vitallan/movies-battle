@@ -3,6 +3,7 @@ package com.allanvital.moviesbattle.web.service;
 import com.allanvital.moviesbattle.utils.MathUtils;
 import com.allanvital.moviesbattle.utils.exception.MaximumValueTooLowException;
 import com.allanvital.moviesbattle.utils.exception.TooManyTriesToFindPairException;
+import com.allanvital.moviesbattle.web.endpoint.exception.InvalidIdAnswerException;
 import com.allanvital.moviesbattle.web.model.Battle;
 import com.allanvital.moviesbattle.web.model.Game;
 import com.allanvital.moviesbattle.web.model.Movie;
@@ -58,7 +59,7 @@ public class BattleService {
         } else if(battle.getRightBracket().getId().equals(answerId)) {
             answer = battle.getRightBracket();
         } else {
-            throw new RuntimeException("invalid id answer"); //fixme custom exception
+            throw new InvalidIdAnswerException("The answer provided is not a valid option of movie id");
         }
         this.answerCurrentBattle(game, answer);
     }
@@ -96,7 +97,6 @@ public class BattleService {
 
     private Battle createNewBattle(Game game) throws MaximumValueTooLowException {
         log.info("Creating new battle for game {}", game);
-        Battle battle = new Battle();
         long totalMovies = movieRepository.count();
         List<Pair<Integer, Integer>> triedPairs = new LinkedList<>();
         Movie firstMovie = null;
@@ -114,38 +114,31 @@ public class BattleService {
             }
             firstMovie = movieRepository.findMovieInIndex(idPair.getFirst());
             secondMovie = movieRepository.findMovieInIndex(idPair.getSecond());
-            Battle persistedBattle = repository.findByGameAndLeftBracketAndRightBracket(game, firstMovie, secondMovie);
-            if (persistedBattle != null) {
+            if(battleAlreadyPlayed(game, firstMovie, secondMovie)) {
                 log.debug("Battle between pair of pageIndex {} already occurred, continuing...", idPair);
                 triedPairs.add(idPair);
                 firstMovie = null;
                 secondMovie = null;
                 continue;
+            } else {
+                log.debug("Battle between movies {} and {} is valid, creating battle", firstMovie, secondMovie);
+                break;
             }
-            persistedBattle = repository.findByGameAndLeftBracketAndRightBracket(game, secondMovie, firstMovie);
-            if (persistedBattle != null) {
-                log.debug("Battle between pair of pageIndex {} already occurred, continuing...", idPair);
-                triedPairs.add(idPair);
-                firstMovie = null;
-                secondMovie = null;
-                continue;
-            }
-            log.debug("Battle between movies {} and {} is valid, creating battle", firstMovie, secondMovie);
-            break;
         } while(maximumNumberOfPossiblePairs > triedPairs.size());
         if (firstMovie == null || secondMovie == null) {
             throw new NoMoreValidBattleMatchesException("There are no more possible movies to create a new battle for this game");
         }
-        battle.setGame(game);
-        battle.setRightBracket(firstMovie);
-        battle.setLeftBracket(secondMovie);
-        if (firstMovie.getRating() > secondMovie.getRating()) { //fixme:think about tie rule
-            battle.setCorrectAnswer(firstMovie);
-        } else {
-            battle.setCorrectAnswer(secondMovie);
-        }
-        battle = repository.save(battle);
-        return battle;
+        return this.persistBattle(game, firstMovie, secondMovie);
+    }
+
+    private Battle persistBattle(Game game, Movie firstMovie, Movie secondMovie) {
+        Battle battle = new Battle(game, firstMovie, secondMovie);
+        return repository.save(battle);
+    }
+
+    private boolean battleAlreadyPlayed(Game game, Movie firstMovie, Movie secondMovie) {
+        return repository.findByGameAndLeftBracketAndRightBracket(game, firstMovie, secondMovie) != null ||
+                repository.findByGameAndLeftBracketAndRightBracket(game, secondMovie, firstMovie) != null;
     }
 
     private boolean hasPairBeenTried(Pair<Integer, Integer> pair, List<Pair<Integer, Integer>> pairList) {

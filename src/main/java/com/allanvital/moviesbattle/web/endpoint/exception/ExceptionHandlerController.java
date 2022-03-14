@@ -16,4 +16,22 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ExceptionResource(response), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = { GameNotFoundException.class })
+    public ResponseEntity<Object> handleGameNotFound(GameNotFoundException exception) {
+        String response = exception.getMessage();
+        return new ResponseEntity<>(new ExceptionResource(response), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = { UserNotOwnerOfGameException.class })
+    public ResponseEntity<Object> handleUserNowOwnerOfGame(UserNotOwnerOfGameException exception) {
+        String response = exception.getMessage();
+        return new ResponseEntity<>(new ExceptionResource(response), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = { InvalidIdAnswerException.class })
+    public ResponseEntity<Object> handleInvalidIdAnswerException(InvalidIdAnswerException exception) {
+        String response = exception.getMessage();
+        return new ResponseEntity<>(new ExceptionResource(response), HttpStatus.BAD_REQUEST);
+    }
+
 }

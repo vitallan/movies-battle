@@ -10,6 +10,8 @@ public interface MovieRepository extends PagingAndSortingRepository<Movie, Integ
 
     long count();
     Page<Movie> findAllByOrderByIdAsc(Pageable pageable);
+    Movie findByRating(Double rating);
+    Movie findByTitle(String title);
     default Movie findMovieInIndex(int index) {
         Page<Movie> movies = this.findAllByOrderByIdAsc(PageRequest.of(index, 1));
         Movie movie = null;
