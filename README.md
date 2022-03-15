@@ -54,7 +54,7 @@ Ao invés de application.properties, algumas configurações ainda estão em con
 
 #### 6. Autenticação complexa
 
-O mecanismo de segurança ficou mais complexo do que o desejado e menos funcional do que o necessário. Isso fez com que algumas validações que poderiam ser diretos no framework de segurança precisassem ser feitas manualmente. O manuseio do JWT também ficou manual.
+O mecanismo de segurança ficou mais complexo do que o desejado e menos funcional do que o necessário. Isso fez com que algumas validações que poderiam ser diretas no framework de segurança precisassem ser feitas manualmente. O manuseio do JWT também ficou manual.
 
 #### 7. Empates sendo evitados
 
